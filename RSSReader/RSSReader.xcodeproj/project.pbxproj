@@ -95,6 +95,8 @@
 		65F75CDC2541D2BC00B57A40 /* RSSReader */ = {
 			isa = PBXGroup;
 			children = (
+				65F75D1B2541D3E200B57A40 /* Business */,
+				65F75D192541D3C100B57A40 /* Presentation */,
 				65F75CDD2541D2BC00B57A40 /* AppDelegate.swift */,
 				65F75CDF2541D2BC00B57A40 /* SceneDelegate.swift */,
 				65F75CE62541D2BE00B57A40 /* Assets.xcassets */,
@@ -120,6 +122,20 @@
 				65F75D012541D2BE00B57A40 /* Info.plist */,
 			);
 			path = RSSReaderUITests;
+			sourceTree = "<group>";
+		};
+		65F75D192541D3C100B57A40 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		65F75D1B2541D3E200B57A40 /* Business */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Business;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
