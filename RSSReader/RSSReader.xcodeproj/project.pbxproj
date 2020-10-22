@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,6 +14,10 @@
 		65F75CEA2541D2BE00B57A40 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 65F75CE82541D2BE00B57A40 /* LaunchScreen.storyboard */; };
 		65F75CF52541D2BE00B57A40 /* RSSReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F75CF42541D2BE00B57A40 /* RSSReaderTests.swift */; };
 		65F75D002541D2BE00B57A40 /* RSSReaderUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F75CFF2541D2BE00B57A40 /* RSSReaderUITests.swift */; };
+		65F75D252541DCF500B57A40 /* RSSFeedsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F75D242541DCF500B57A40 /* RSSFeedsVM.swift */; };
+		65F75D2D2541DCFB00B57A40 /* RSSFeedsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F75D2C2541DCFB00B57A40 /* RSSFeedsVC.swift */; };
+		65F75D322541DD0600B57A40 /* RSSStoriesVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F75D312541DD0600B57A40 /* RSSStoriesVM.swift */; };
+		65F75D372541DD0D00B57A40 /* RSSStoriesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65F75D362541DD0D00B57A40 /* RSSStoriesVC.swift */; };
 		CA5D8CA9094C38459F8E0525 /* Pods_RSSReader.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69F73E5F01E0A4B8CE3892E1 /* Pods_RSSReader.framework */; };
 		F5A927B91DE43B8A0EB4656C /* Pods_RSSReader_RSSReaderUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A4B5A3607F257732D681C24B /* Pods_RSSReader_RSSReaderUITests.framework */; };
 /* End PBXBuildFile section */
@@ -51,6 +55,10 @@
 		65F75CFB2541D2BE00B57A40 /* RSSReaderUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RSSReaderUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		65F75CFF2541D2BE00B57A40 /* RSSReaderUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSReaderUITests.swift; sourceTree = "<group>"; };
 		65F75D012541D2BE00B57A40 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		65F75D242541DCF500B57A40 /* RSSFeedsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSFeedsVM.swift; sourceTree = "<group>"; };
+		65F75D2C2541DCFB00B57A40 /* RSSFeedsVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSFeedsVC.swift; sourceTree = "<group>"; };
+		65F75D312541DD0600B57A40 /* RSSStoriesVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSStoriesVM.swift; sourceTree = "<group>"; };
+		65F75D362541DD0D00B57A40 /* RSSStoriesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RSSStoriesVC.swift; sourceTree = "<group>"; };
 		69F73E5F01E0A4B8CE3892E1 /* Pods_RSSReader.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RSSReader.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		86918F0425031EACA6BD4CAC /* Pods-RSSReaderTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RSSReaderTests.debug.xcconfig"; path = "Target Support Files/Pods-RSSReaderTests/Pods-RSSReaderTests.debug.xcconfig"; sourceTree = "<group>"; };
 		907A6627798570A8863AC751 /* Pods-RSSReader-RSSReaderUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RSSReader-RSSReaderUITests.debug.xcconfig"; path = "Target Support Files/Pods-RSSReader-RSSReaderUITests/Pods-RSSReader-RSSReaderUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -144,6 +152,8 @@
 		65F75D192541D3C100B57A40 /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
+				65F75D222541DCBE00B57A40 /* RSS Feeds Screen */,
+				65F75D232541DCC700B57A40 /* RSS Stories Screen */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -153,6 +163,24 @@
 			children = (
 			);
 			path = Business;
+			sourceTree = "<group>";
+		};
+		65F75D222541DCBE00B57A40 /* RSS Feeds Screen */ = {
+			isa = PBXGroup;
+			children = (
+				65F75D242541DCF500B57A40 /* RSSFeedsVM.swift */,
+				65F75D2C2541DCFB00B57A40 /* RSSFeedsVC.swift */,
+			);
+			path = "RSS Feeds Screen";
+			sourceTree = "<group>";
+		};
+		65F75D232541DCC700B57A40 /* RSS Stories Screen */ = {
+			isa = PBXGroup;
+			children = (
+				65F75D312541DD0600B57A40 /* RSSStoriesVM.swift */,
+				65F75D362541DD0D00B57A40 /* RSSStoriesVC.swift */,
+			);
+			path = "RSS Stories Screen";
 			sourceTree = "<group>";
 		};
 		90A2941429BE51F3A0CCBF06 /* Frameworks */ = {
@@ -175,7 +203,6 @@
 				86918F0425031EACA6BD4CAC /* Pods-RSSReaderTests.debug.xcconfig */,
 				4EFC1C20AB298B585CF5634E /* Pods-RSSReaderTests.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -418,6 +445,10 @@
 			files = (
 				65F75CDE2541D2BC00B57A40 /* AppDelegate.swift in Sources */,
 				65F75CE02541D2BC00B57A40 /* SceneDelegate.swift in Sources */,
+				65F75D322541DD0600B57A40 /* RSSStoriesVM.swift in Sources */,
+				65F75D252541DCF500B57A40 /* RSSFeedsVM.swift in Sources */,
+				65F75D2D2541DCFB00B57A40 /* RSSFeedsVC.swift in Sources */,
+				65F75D372541DD0D00B57A40 /* RSSStoriesVC.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
