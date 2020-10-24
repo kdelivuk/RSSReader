@@ -10,6 +10,15 @@ import RxSwift
 
 final class RSSFeedsVC: UIViewController {
     
+    var viewModel = RSSFeedsVM(rssManager: RSSManager())
+    
+    private lazy var tableView: UITableView = {
+        let tv = UITableView(frame: .zero, style: .insetGrouped)
+        tv.rowHeight = UITableView.automaticDimension
+        tv.estimatedRowHeight = 120
+        tv.register(UITableViewCell.self, forCellReuseIdentifier: "UITableViewCell")
+        return tv
+    }()
     
     let disposeBag = DisposeBag()
     
@@ -18,7 +27,42 @@ final class RSSFeedsVC: UIViewController {
         let bbb = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(sgagsa(sender:)))
         view.backgroundColor = .white
         navigationItem.rightBarButtonItem = bbb
+    
+
+        self.view.addSubview(self.tableView)
+        bindTableView()
+        setupConstraints()
+    }
+    
+    func bindTableView() {
+        viewModel
+            .viewModelsDriver
+            .drive(tableView.rx.items) { tableView, row, item in
+                let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell")!
+                cell.textLabel?.text = item.name
+                
+                return cell
+            }.disposed(by: disposeBag)
         
+        tableView.rx.itemDeleted
+            .subscribe(onNext: { (indexPath) in
+                self.viewModel.removeRSSFeedItem(at: indexPath)
+            })
+            .disposed(by: disposeBag)
+        
+        tableView
+            .rx
+            .itemSelected
+            .subscribe { indexPath in
+                self.viewModel.onItemSelected(at: indexPath)
+            }.disposed(by: disposeBag)
+
+    }
+    
+    func setupConstraints() {
+        tableView.snp.makeConstraints { make in
+            make.edges.equalTo(0)
+        }
     }
     
     @objc
@@ -32,6 +76,7 @@ final class RSSFeedsVC: UIViewController {
             .present(in: self, title: "Alert", message: "message", style: .alert, actions: actions)
             .subscribe(onNext: { buttonIndex in
                 print(buttonIndex)
+                self.viewModel.addRSSFeedItem(item: RSSFeedItem(name: buttonIndex.first!, url: buttonIndex.last!))
             })
             .disposed(by: disposeBag)
     }

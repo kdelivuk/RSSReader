@@ -123,7 +123,6 @@
 			isa = PBXGroup;
 			children = (
 				65F75D1B2541D3E200B57A40 /* Business */,
-				65F75D192541D3C100B57A40 /* Presentation */,
 				65F75CDD2541D2BC00B57A40 /* AppDelegate.swift */,
 				65F75CDF2541D2BC00B57A40 /* SceneDelegate.swift */,
 				65F75CE62541D2BE00B57A40 /* Assets.xcassets */,
@@ -164,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				65E5452D254221E300AC8646 /* RSSManager.swift */,
+				65F75D192541D3C100B57A40 /* Presentation */,
 			);
 			path = Business;
 			sourceTree = "<group>";
@@ -180,8 +180,8 @@
 		65F75D232541DCC700B57A40 /* RSS Stories Screen */ = {
 			isa = PBXGroup;
 			children = (
-				65F75D242541DCF500B57A40 /* RSSStoriesVM.swift */,
 				65F75D2C2541DCFB00B57A40 /* RSSStoriesVC.swift */,
+				65F75D242541DCF500B57A40 /* RSSStoriesVM.swift */,
 			);
 			path = "RSS Stories Screen";
 			sourceTree = "<group>";

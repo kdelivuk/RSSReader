@@ -8,7 +8,7 @@ target 'RSSReader' do
   # Pods for RSSReader
   pod 'RxSwift'
   pod 'RxCocoa'
-  pod 'RxDataSources'
+  pod 'RxRelay'
   pod 'SnapKit'
   pod 'FeedKit'
   pod 'SwiftSoup'

@@ -8,29 +8,29 @@
 import RxSwift
 import FeedKit
 import SwiftSoup
-
-struct Feed {
-    
-}
+import RxRelay
 
 final class RSSManager {
     
-    func fetchRSSFeed(for url: URL) -> Observable<RSSFeed> {
-        return  Observable.create { observer in
-//            let parser = FeedParser(URL:
-            if let htmlString = try? String(contentsOf: url, encoding: .ascii) {
-//                if let doc: Document = try? SwiftSoup.parse(htmlString) {
-//                    let v = try! doc.getAllElements().select("script").first()
-//                    print(v)
-//                }
-                if let result = htmlString.parseStrring(start: "window.flatpageData = ", to: "//-->") { // start from {" to "}
-                    let data = Data(result.utf8)
-//                    let json = try! JSONSerialization.jsonObject(with: data, options: [])
-                    print(result.utf8)
-                }
-            }
-            return Disposables.create()
-        }
+    private var rssFeedItems: BehaviorRelay<[RSSFeedItem]> = .init(value: [])
+    var rssFeedItemObservable: Observable<[RSSFeedItem]> {
+        return rssFeedItems.asObservable()
+    }
+    
+    func item(at index: Int) -> RSSFeedItem {
+        return rssFeedItems.value[index]
+    }
+    
+    func addRSSFeedItem(item: RSSFeedItem) {
+        var newItems = rssFeedItems.value
+        newItems.append(item)
+        rssFeedItems.accept(newItems)
+    }
+    
+    func removeRSSFeedItem(at index: Int) {
+        let itemToRemove = item(at: index)
+        let newItems = rssFeedItems.value.filter({$0.name != itemToRemove.name})
+        rssFeedItems.accept(newItems)
     }
     
     func fetchRSSStories(for url: URL) -> Observable<RSSFeed> {
