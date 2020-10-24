@@ -8,9 +8,12 @@ target 'RSSReader' do
   # Pods for RSSReader
   pod 'RxSwift'
   pod 'RxCocoa'
+  pod 'RxDataSources'
   pod 'SnapKit'
   pod 'FeedKit'
-
+  pod 'SwiftSoup'
+  pod 'Kingfisher'
+  
   target 'RSSReaderTests' do
     inherit! :search_paths
     # Pods for testing
