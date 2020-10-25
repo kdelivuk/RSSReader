@@ -11,6 +11,10 @@ import RxCocoa
 struct RSSFeedItem {
     let name: String
     let url: String
+    
+    var isValid: Bool {
+        return url.isValidURL
+    }
 }
 
 
@@ -46,5 +50,9 @@ class RSSFeedsVM {
     func onItemSelected(at indexPath: IndexPath) {
         let item = rssManager.item(at: indexPath.row)
         itemSelectedSubject.onNext(item)
+    }
+    
+    func isValid(at indexPath: IndexPath) -> Bool {
+        return rssManager.item(at: indexPath.row).isValid
     }
 }

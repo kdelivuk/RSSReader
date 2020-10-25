@@ -8,9 +8,24 @@
 import UIKit
 import RxSwift
 
+extension String {
+    var isValidURL: Bool {
+        let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        if let match = detector.firstMatch(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count)) {
+            // it is a link, if the match covers the whole string
+            return match.range.length == self.utf16.count
+        } else {
+            return false
+        }
+    }
+}
+
 final class RSSFeedsVC: UIViewController {
     
-    var viewModel = RSSFeedsVM(rssManager: RSSManager())
+    // MARK: - Private properties
+    
+    private let viewModel: RSSFeedsVM
+    private let disposeBag = DisposeBag()
     
     private lazy var tableView: UITableView = {
         let tv = UITableView(frame: .zero, style: .insetGrouped)
@@ -20,33 +35,61 @@ final class RSSFeedsVC: UIViewController {
         return tv
     }()
     
-    let disposeBag = DisposeBag()
+    // MARK: - Class lifecycle
+    
+    init(viewModel: RSSFeedsVM) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let bbb = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(sgagsa(sender:)))
         view.backgroundColor = .white
-        navigationItem.rightBarButtonItem = bbb
-    
-
-        self.view.addSubview(self.tableView)
+        
         bindTableView()
+        addSubviews()
+        addBarButtonItems()
         setupConstraints()
     }
     
-    func bindTableView() {
+    // MARK: - Private methods
+    
+    private func addSubviews() {
+        view.addSubview(self.tableView)
+    }
+    
+    private func setupConstraints() {
+        tableView.snp.makeConstraints { make in
+            make.edges.equalTo(0)
+        }
+    }
+    
+    private func addBarButtonItems() {
+        let barButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(barButtonItemAction(sender:)))
+        navigationItem.rightBarButtonItem = barButtonItem
+    }
+    
+    private func bindTableView() {
         viewModel
             .viewModelsDriver
             .drive(tableView.rx.items) { tableView, row, item in
                 let cell = tableView.dequeueReusableCell(withIdentifier: "UITableViewCell")!
                 cell.textLabel?.text = item.name
-                
+                cell.textLabel?.textColor = item.isValid ? .black : .red
                 return cell
             }.disposed(by: disposeBag)
         
         tableView.rx.itemDeleted
-            .subscribe(onNext: { (indexPath) in
-                self.viewModel.removeRSSFeedItem(at: indexPath)
+            .subscribe(onNext: { [weak self] indexPath in
+                if self.viewModel.isValid(at: indexPath) {
+                    self.viewModel.removeRSSFeedItem(at:  indexPath)
+                } else {
+                    // TODO: -
+                }
             })
             .disposed(by: disposeBag)
         
@@ -59,70 +102,18 @@ final class RSSFeedsVC: UIViewController {
 
     }
     
-    func setupConstraints() {
-        tableView.snp.makeConstraints { make in
-            make.edges.equalTo(0)
-        }
-    }
-    
     @objc
-    private func sgagsa(sender: UIBarButtonItem) {
-        let actions: [UIAlertController.AlertAction] = [
+    private func barButtonItemAction(sender: UIBarButtonItem) {
+        let actions: [AlertAction] = [
             .action(title: "Cancel", style: .destructive),
             .action(title: "OK")
         ]
 
         UIAlertController
             .present(in: self, title: "Alert", message: "message", style: .alert, actions: actions)
-            .subscribe(onNext: { buttonIndex in
-                print(buttonIndex)
-                self.viewModel.addRSSFeedItem(item: RSSFeedItem(name: buttonIndex.first!, url: buttonIndex.last!))
+            .subscribe(onNext: { items in
+                self.viewModel.addRSSFeedItem(item: RSSFeedItem(name: items.first!, url: items.last!))
             })
             .disposed(by: disposeBag)
     }
-}
-extension UIAlertController {
-
-    struct AlertAction {
-        var title: String?
-        var style: UIAlertAction.Style
-
-        static func action(title: String?, style: UIAlertAction.Style = .default) -> AlertAction {
-            return AlertAction(title: title, style: style)
-        }
-    }
-
-    static func present(
-        in viewController: UIViewController,
-        title: String?,
-        message: String?,
-        style: UIAlertController.Style,
-        actions: [AlertAction])
-        -> Observable<[String]>
-    {
-        return Observable.create { observer in
-            let alertController = UIAlertController(title: title, message: message, preferredStyle: style)
-
-            alertController.addTextField { textField in
-                textField.placeholder = "Enter name of rss feed"
-            }
-            
-            alertController.addTextField { textField in
-                textField.placeholder = "Enter url"
-            }
-            
-            actions.enumerated().forEach { index, action in
-                let action = UIAlertAction(title: action.title, style: action.style) { _ in
-                    observer.onNext(alertController.textFields?.map { $0.text ?? "" } ?? [])
-                    observer.onCompleted()
-                }
-                alertController.addAction(action)
-            }
-
-            viewController.present(alertController, animated: true, completion: nil)
-            return Disposables.create { alertController.dismiss(animated: true, completion: nil) }
-        }
-
-    }
-
 }

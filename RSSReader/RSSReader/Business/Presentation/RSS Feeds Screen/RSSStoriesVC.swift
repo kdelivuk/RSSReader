@@ -15,7 +15,10 @@ import Kingfisher
 
 final class RSSStoriesVC: UIViewController {
     
-    var viewModel = RSSStoriesVM(rssManager: RSSManager())
+    // MARK: - Private properties
+    
+    private let viewModel: RSSStoriesVM
+    private let disposeBag = DisposeBag()
     
     private lazy var tableView: UITableView = {
         let tv = UITableView(frame: .zero, style: .insetGrouped)
@@ -25,7 +28,16 @@ final class RSSStoriesVC: UIViewController {
         return tv
     }()
 
-    private let disposeBag = DisposeBag()
+    // MARK: - Class lifecycle
+    
+    init(viewModel: RSSStoriesVM) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
