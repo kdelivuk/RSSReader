@@ -24,7 +24,7 @@ class RSSFeedsVM: RSSFeedsVMType {
     
     // MARK: - Private properties
     
-    private let rssManager: RSSManager
+    private let rssManager: RSSManagerType
     private let disposeBag = DisposeBag()
     private let viewModelsSubject = BehaviorSubject<[RSSFeedItem]>(value: [])
     
@@ -36,7 +36,7 @@ class RSSFeedsVM: RSSFeedsVMType {
     
     // MARK: - Class lifecycle
     
-    init(rssManager: RSSManager) {
+    init(rssManager: RSSManagerType) {
         self.rssManager = rssManager
         
         self.rssManager

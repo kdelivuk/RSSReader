@@ -17,7 +17,7 @@ final class RSSStoriesVC: UIViewController {
     
     // MARK: - Private properties
     
-    private let viewModel: RSSStoriesVM
+    private let viewModel: RSSStoriesVMType
     private let disposeBag = DisposeBag()
     
     private lazy var tableView: UITableView = {
@@ -30,7 +30,7 @@ final class RSSStoriesVC: UIViewController {
 
     // MARK: - Class lifecycle
     
-    init(viewModel: RSSStoriesVM) {
+    init(viewModel: RSSStoriesVMType) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }

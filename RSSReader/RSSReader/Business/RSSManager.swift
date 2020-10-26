@@ -10,7 +10,17 @@ import FeedKit
 import SwiftSoup
 import RxRelay
 
-final class RSSManager {
+protocol RSSManagerType {
+    var rssFeedItemObservable: Observable<[RSSFeedItem]> { get }
+    
+    func story(at index: Int) -> RSSFeedStory
+    func item(at index: Int) -> RSSFeedItem
+    func addRSSFeedItem(item: RSSFeedItem)
+    func removeRSSFeedItem(at index: Int)
+    func fetchRSSStories(for url: URL) -> Observable<[RSSFeedStory]>
+}
+
+final class RSSManager: RSSManagerType {
     
     // MARK: - Private properties
     

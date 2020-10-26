@@ -10,7 +10,7 @@ import RxSwift
 
 final class AppCoordinator: Coordinator {
     
-    private let rssManager = RSSManager()
+    private let rssManager: RSSManagerType = RSSManager()
     private let disposeBag = DisposeBag()
     
     init(in window: UIWindow) {

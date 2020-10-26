@@ -16,7 +16,7 @@ protocol RSSStoriesVMType {
     func onItemSelected(at indexPath: IndexPath)
 }
 
-final class RSSStoriesVM {
+final class RSSStoriesVM: RSSStoriesVMType {
     
     // MARK: - Coordinator actions
     
@@ -30,13 +30,13 @@ final class RSSStoriesVM {
     
     // MARK: - Private properties
     
-    private let rssManager: RSSManager
+    private let rssManager: RSSManagerType
     private let disposeBag = DisposeBag()
     private let viewModelsSubject = BehaviorSubject<[RSSFeedStory]>(value: [])
     
     // MARK: - Class lifecycle
     
-    init(rssFeedItem: RSSFeedItem, rssManager: RSSManager) {
+    init(rssFeedItem: RSSFeedItem, rssManager: RSSManagerType) {
         self.rssManager = rssManager
         
         guard let url =  URL(string: rssFeedItem.url) else {
