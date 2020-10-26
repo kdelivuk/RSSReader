@@ -17,6 +17,12 @@ final class RSSManager {
         return rssFeedItems.asObservable()
     }
     
+    private var rssFeedStories: BehaviorRelay<[RSSFeedStory]> = .init(value: [])
+    
+    func story(at index: Int) -> RSSFeedStory {
+        return rssFeedStories.value[index]
+    }
+    
     func item(at index: Int) -> RSSFeedItem {
         return rssFeedItems.value[index]
     }
@@ -33,7 +39,7 @@ final class RSSManager {
         rssFeedItems.accept(newItems)
     }
     
-    func fetchRSSStories(for url: URL) -> Observable<RSSFeed> {
+    func fetchRSSStories(for url: URL) -> Observable<[RSSFeedStory]> {
         return  Observable.create { observer in
             let parser = FeedParser(URL: url)
             parser.parseAsync(queue: DispatchQueue.global(qos: .userInitiated)) { (result) in
@@ -45,7 +51,9 @@ final class RSSManager {
                         case let .atom(feed):
                             break
                         case let .rss(feed):
-                            observer.onNext(feed)
+                            let parsedFeed = self.parseItemsFeed(feed: feed)
+                            self.rssFeedStories.accept(parsedFeed)
+                            observer.onNext(parsedFeed)
                         case let .json(feed):
                             break
                         }
@@ -58,5 +66,23 @@ final class RSSManager {
             return Disposables.create()
         }
     }
-
+    
+    private func parseItemsFeed(feed: RSSFeed) -> [RSSFeedStory] {
+        return feed.items?.map { item -> RSSFeedStory in
+            do {
+                if let html = item.description {
+                    let doc: Document = try SwiftSoup.parse(html)
+                    if let imageURL = try doc.select("img").first()?.attr("src") {
+                        return RSSFeedStory(title: item.title ?? "Bez naslova", imageStringUrl: imageURL, url: item.link)
+                    }
+                }
+            } catch Exception.Error(let type, let message) {
+                print(type, message)
+                return RSSFeedStory(title: item.title ?? "Bez naslova", imageStringUrl: nil, url: item.link)
+            } catch {
+                print("RSSStoriesVM - Error parsing HTML.")
+            }
+            return RSSFeedStory(title: item.title ?? "Bez naslova", imageStringUrl: nil, url: item.link)
+        } ?? []
+    }
 }

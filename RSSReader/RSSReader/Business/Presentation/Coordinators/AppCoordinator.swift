@@ -36,6 +36,17 @@ final class AppCoordinator: Coordinator {
         let rssStoriesVM = RSSStoriesVM(rssFeedItem: rssFeedItem, rssManager: rssManager)
         let rssStoriesVC = RSSStoriesVC(viewModel: rssStoriesVM)
         
+        rssStoriesVM
+            .itemSelectedSubject
+            .subscribe { (item) in
+                self.pushWebViewScreen(rssFeedItem: item, in: navigationController)
+        }.disposed(by: disposeBag)
+         
         navigationController.pushViewController(rssStoriesVC, animated: true)
+    }
+    
+    func pushWebViewScreen(rssFeedItem: RSSFeedStory, in navigationController: UINavigationController) {
+        let wkWebVC = WKWebVC(stringURL: rssFeedItem.url!)
+        navigationController.pushViewController(wkWebVC, animated: true)
     }
 }

@@ -56,6 +56,13 @@ final class RSSStoriesVC: UIViewController {
                 
                 return cell
             }.disposed(by: disposeBag)
+        
+        tableView
+            .rx
+            .itemSelected
+            .subscribe { indexPath in
+                self.viewModel.onItemSelected(at: indexPath)
+            }.disposed(by: disposeBag)
     }
     
     func setupConstraints() {
@@ -103,7 +110,7 @@ final class ImageViewTitleLabelCell: UITableViewCell {
         }
     }
     
-    func configure(with item: Item) {
+    func configure(with item: RSSFeedStory) {
         titleLabel.text = item.title
         if item.imageStringUrl != nil {
             leftImageView.kf.setImage(with: URL(string: item.imageStringUrl!)!)

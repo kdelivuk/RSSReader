@@ -85,6 +85,7 @@ final class RSSFeedsVC: UIViewController {
         
         tableView.rx.itemDeleted
             .subscribe(onNext: { [weak self] indexPath in
+                guard let self = self else { return }
                 if self.viewModel.isValid(at: indexPath) {
                     self.viewModel.removeRSSFeedItem(at:  indexPath)
                 } else {
@@ -99,7 +100,6 @@ final class RSSFeedsVC: UIViewController {
             .subscribe { indexPath in
                 self.viewModel.onItemSelected(at: indexPath)
             }.disposed(by: disposeBag)
-
     }
     
     @objc
@@ -110,7 +110,7 @@ final class RSSFeedsVC: UIViewController {
         ]
 
         UIAlertController
-            .present(in: self, title: "Alert", message: "message", style: .alert, actions: actions)
+            .present(in: self, title: "Add new RSS feed provider", message: "Add new RSS feed provider", style: .alert, actions: actions)
             .subscribe(onNext: { items in
                 self.viewModel.addRSSFeedItem(item: RSSFeedItem(name: items.first!, url: items.last!))
             })
