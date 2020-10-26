@@ -8,23 +8,11 @@
 import UIKit
 import RxSwift
 
-extension String {
-    var isValidURL: Bool {
-        let detector = try! NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-        if let match = detector.firstMatch(in: self, options: [], range: NSRange(location: 0, length: self.utf16.count)) {
-            // it is a link, if the match covers the whole string
-            return match.range.length == self.utf16.count
-        } else {
-            return false
-        }
-    }
-}
-
 final class RSSFeedsVC: UIViewController {
     
     // MARK: - Private properties
     
-    private let viewModel: RSSFeedsVM
+    private let viewModel: RSSFeedsVMType
     private let disposeBag = DisposeBag()
     
     private lazy var tableView: UITableView = {
@@ -37,7 +25,7 @@ final class RSSFeedsVC: UIViewController {
     
     // MARK: - Class lifecycle
     
-    init(viewModel: RSSFeedsVM) {
+    init(viewModel: RSSFeedsVMType) {
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
@@ -86,11 +74,7 @@ final class RSSFeedsVC: UIViewController {
         tableView.rx.itemDeleted
             .subscribe(onNext: { [weak self] indexPath in
                 guard let self = self else { return }
-                if self.viewModel.isValid(at: indexPath) {
-                    self.viewModel.removeRSSFeedItem(at:  indexPath)
-                } else {
-                    // TODO: -
-                }
+                self.viewModel.removeRSSFeedItem(at:  indexPath)
             })
             .disposed(by: disposeBag)
         
@@ -101,6 +85,8 @@ final class RSSFeedsVC: UIViewController {
                 self.viewModel.onItemSelected(at: indexPath)
             }.disposed(by: disposeBag)
     }
+    
+    // MARK: - Button callbacks
     
     @objc
     private func barButtonItemAction(sender: UIBarButtonItem) {

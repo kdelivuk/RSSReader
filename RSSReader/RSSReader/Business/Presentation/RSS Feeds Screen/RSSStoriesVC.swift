@@ -41,19 +41,34 @@ final class RSSStoriesVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .white
-        self.view.addSubview(self.tableView)
+        configureView()
         bindTableView()
+        addSubviews()
         setupConstraints()
     }
     
-    func bindTableView() {
+    // MARK: - Private methods
+    
+    private func configureView() {
+        view.backgroundColor = .white
+    }
+    
+    private func addSubviews() {
+        view.addSubview(tableView)
+    }
+    
+    private func setupConstraints() {
+        tableView.snp.makeConstraints { make in
+            make.edges.equalTo(0)
+        }
+    }
+    
+    private func bindTableView() {
         viewModel
             .viewModelsDriver
             .drive(tableView.rx.items) { tableView, row, item in
                 let cell = tableView.dequeueReusableCell(withIdentifier: "ImageViewTitleLabelCell") as! ImageViewTitleLabelCell
                 cell.configure(with: item)
-                
                 return cell
             }.disposed(by: disposeBag)
         
@@ -64,56 +79,5 @@ final class RSSStoriesVC: UIViewController {
                 self.viewModel.onItemSelected(at: indexPath)
             }.disposed(by: disposeBag)
     }
-    
-    func setupConstraints() {
-        tableView.snp.makeConstraints { make in
-            make.edges.equalTo(0)
-        }
-    }
 }
 
-final class ImageViewTitleLabelCell: UITableViewCell {
-    
-    private let titleLabel = UILabel()
-    let leftImageView = UIImageView()
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setupConstraints()
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    private func setupConstraints() {
-        let hStackView = UIStackView(arrangedSubviews: [leftImageView, titleLabel])
-        hStackView.axis = .horizontal
-        hStackView.alignment = .fill
-        hStackView.spacing = 10
-        
-        let vStackView = UIStackView(arrangedSubviews: [hStackView])
-        vStackView.axis = .vertical
-        
-        contentView.addSubview(vStackView)
-        
-        vStackView.snp.makeConstraints {
-            $0.edges.equalToSuperview().inset(15)
-        }
-        
-        titleLabel.textAlignment = .left
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 14)
-        titleLabel.numberOfLines = 0
-        leftImageView.contentMode = .scaleAspectFit
-        leftImageView.snp.makeConstraints {
-            $0.size.equalTo(100)
-        }
-    }
-    
-    func configure(with item: RSSFeedStory) {
-        titleLabel.text = item.title
-        if item.imageStringUrl != nil {
-            leftImageView.kf.setImage(with: URL(string: item.imageStringUrl!)!)
-        }
-    }
-}

@@ -8,27 +8,33 @@
 import RxSwift
 import RxCocoa
 
-struct RSSFeedItem {
-    let name: String
-    let url: String
+protocol RSSFeedsVMType {
+    var viewModelsDriver: SharedSequence<DriverSharingStrategy, [RSSFeedItem]> { get }
     
-    var isValid: Bool {
-        return url.isValidURL
-    }
+    func addRSSFeedItem(item: RSSFeedItem)
+    func removeRSSFeedItem(at indexPath: IndexPath)
+    func onItemSelected(at indexPath: IndexPath)
 }
 
-
-class RSSFeedsVM {
+class RSSFeedsVM: RSSFeedsVMType {
     
-    var viewModelsDriver: SharedSequence<DriverSharingStrategy, [RSSFeedItem]> {
-        return viewModelsSubject.asDriver(onErrorJustReturn: [])
-    }
+    // MARK: - Coordinator actions
     
     var itemSelectedSubject = PublishSubject<RSSFeedItem>()
+    
+    // MARK: - Private properties
     
     private let rssManager: RSSManager
     private let disposeBag = DisposeBag()
     private let viewModelsSubject = BehaviorSubject<[RSSFeedItem]>(value: [])
+    
+    // MARK: - Public properties
+    
+    lazy var viewModelsDriver: SharedSequence<DriverSharingStrategy, [RSSFeedItem]> = {
+        return viewModelsSubject.asDriver(onErrorJustReturn: [])
+    }()
+    
+    // MARK: - Class lifecycle
     
     init(rssManager: RSSManager) {
         self.rssManager = rssManager
@@ -39,12 +45,18 @@ class RSSFeedsVM {
             .disposed(by: disposeBag)
     }
     
+    // MARK: - Public properties
+    
     func addRSSFeedItem(item: RSSFeedItem) {
         rssManager.addRSSFeedItem(item: item)
     }
     
     func removeRSSFeedItem(at indexPath: IndexPath) {
-        rssManager.removeRSSFeedItem(at: indexPath.row)
+        if isValid(at: indexPath) {
+            rssManager.removeRSSFeedItem(at: indexPath.row)
+        } else {
+            // TODO: -
+        }
     }
     
     func onItemSelected(at indexPath: IndexPath) {
@@ -52,7 +64,9 @@ class RSSFeedsVM {
         itemSelectedSubject.onNext(item)
     }
     
-    func isValid(at indexPath: IndexPath) -> Bool {
+    // MARK: - Private properties
+    
+    private func isValid(at indexPath: IndexPath) -> Bool {
         return rssManager.item(at: indexPath.row).isValid
     }
 }

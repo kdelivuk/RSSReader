@@ -12,12 +12,18 @@ import RxRelay
 
 final class RSSManager {
     
-    private var rssFeedItems: BehaviorRelay<[RSSFeedItem]> = .init(value: [])
-    var rssFeedItemObservable: Observable<[RSSFeedItem]> {
-        return rssFeedItems.asObservable()
-    }
+    // MARK: - Private properties
     
-    private var rssFeedStories: BehaviorRelay<[RSSFeedStory]> = .init(value: [])
+    private let rssFeedStories: BehaviorRelay<[RSSFeedStory]> = .init(value: [])
+    private let rssFeedItems: BehaviorRelay<[RSSFeedItem]> = .init(value: [])
+    
+    // MARK: - Public properties
+    
+    lazy var rssFeedItemObservable: Observable<[RSSFeedItem]> = {
+        return rssFeedItems.asObservable()
+    }()
+    
+    // MARK: - Public methods
     
     func story(at index: Int) -> RSSFeedStory {
         return rssFeedStories.value[index]
@@ -48,17 +54,17 @@ final class RSSManager {
                     case .success(let feed):
                         print(feed)
                         switch feed {
-                        case let .atom(feed):
-                            break
                         case let .rss(feed):
                             let parsedFeed = self.parseItemsFeed(feed: feed)
                             self.rssFeedStories.accept(parsedFeed)
                             observer.onNext(parsedFeed)
-                        case let .json(feed):
+                        default:
+                            let error = GeneralError(type: .api, description: "Parsing error.")
+                            observer.onError(error)
                             break
                         }
                     case .failure(let error):
-                        print(error)
+
                         observer.onError(error)
                     }
                 }
@@ -66,6 +72,8 @@ final class RSSManager {
             return Disposables.create()
         }
     }
+    
+    // MARK: - Private methods
     
     private func parseItemsFeed(feed: RSSFeed) -> [RSSFeedStory] {
         return feed.items?.map { item -> RSSFeedStory in

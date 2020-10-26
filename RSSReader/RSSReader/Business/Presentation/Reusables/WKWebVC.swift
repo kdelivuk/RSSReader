@@ -5,13 +5,16 @@
 //  Created by Kristijan Delivuk on 25/10/2020.
 //
 
-import UIKit
 import WebKit
 
 final class WKWebVC: UIViewController, WKNavigationDelegate {
 
+    // MARK: - Private properties
+    
     private let webView = WKWebView()
     private let stringURL: String
+    
+    // MARK: - Class lifecycle
     
     init(stringURL: String) {
         self.stringURL = stringURL
@@ -28,7 +31,10 @@ final class WKWebVC: UIViewController, WKNavigationDelegate {
         webView.frame = view.bounds
         webView.navigationDelegate = self
 
-        let url = URL(string: stringURL)!
+        guard let url = URL(string: stringURL) else {
+            // TODO: -
+            return
+        }
         let urlRequest = URLRequest(url: url)
 
         webView.load(urlRequest)
@@ -36,6 +42,8 @@ final class WKWebVC: UIViewController, WKNavigationDelegate {
         view.addSubview(webView)
     }
 
+    // MARK: - WKWebView delegate
+    
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         decisionHandler(.allow)
     }
