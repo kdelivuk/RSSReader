@@ -36,8 +36,8 @@ final class RSSFeedsVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .white
         
+        setupMainView()
         bindTableView()
         addSubviews()
         addBarButtonItems()
@@ -45,6 +45,11 @@ final class RSSFeedsVC: UIViewController {
     }
     
     // MARK: - Private methods
+    
+    private func setupMainView() {
+        view.backgroundColor = .white
+        title = "RSS Feeds"
+    }
     
     private func addSubviews() {
         view.addSubview(self.tableView)
@@ -85,6 +90,15 @@ final class RSSFeedsVC: UIViewController {
             .subscribe { [unowned self] indexPath in
                 self.viewModel.onItemSelected(at: indexPath)
             }.disposed(by: disposeBag)
+        
+        let isEmpty = tableView.rx.isEmpty(message: "There is currently no RSS Feeds added. Start by adding one with + button located in the top right corner of the screen.")
+        viewModel
+            .viewModelsDriver
+            .asObservable()
+            .map { $0.count <= 0 }
+            .distinctUntilChanged()
+            .bind(to: isEmpty)
+            .disposed(by: disposeBag)
     }
     
     // MARK: - Button callbacks

@@ -12,6 +12,7 @@ import RxSwift
 import FeedKit
 import SwiftSoup
 import Kingfisher
+import RxCocoa
 
 final class RSSStoriesVC: UIViewController {
     
@@ -51,6 +52,7 @@ final class RSSStoriesVC: UIViewController {
     
     private func configureView() {
         view.backgroundColor = .white
+        title = "RSS Stories"
     }
     
     private func addSubviews() {
@@ -78,6 +80,16 @@ final class RSSStoriesVC: UIViewController {
             .subscribe { indexPath in
                 self.viewModel.onItemSelected(at: indexPath)
             }.disposed(by: disposeBag)
+        
+        
+        let isEmpty = tableView.rx.isEmpty(message: "There are no stories for this RSS feed at the moment.")
+        viewModel
+            .viewModelsDriver
+            .asObservable()
+            .map { $0.count <= 0 }
+            .distinctUntilChanged()
+            .bind(to: isEmpty)
+            .disposed(by: disposeBag)
+    }
     }
 }
-
