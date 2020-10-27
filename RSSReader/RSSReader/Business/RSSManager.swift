@@ -18,6 +18,7 @@ protocol RSSManagerType {
     func addRSSFeedItem(item: RSSFeedItem)
     func removeRSSFeedItem(at index: Int)
     func fetchRSSStories(for url: URL) -> Observable<[RSSFeedStory]>
+    func removeAllRSSFeedItems()
 }
 
 final class RSSManager: RSSManagerType {
@@ -25,13 +26,19 @@ final class RSSManager: RSSManagerType {
     // MARK: - Private properties
     
     private let rssFeedStories: BehaviorRelay<[RSSFeedStory]> = .init(value: [])
-    private let rssFeedItems: BehaviorRelay<[RSSFeedItem]> = .init(value: [])
+    private let rssFeedItems: BehaviorRelay<[RSSFeedItem]>
+    private let database: Database
     
     // MARK: - Public properties
     
     lazy var rssFeedItemObservable: Observable<[RSSFeedItem]> = {
         return rssFeedItems.asObservable()
     }()
+
+    init(database: Database) {
+        self.database = database
+        rssFeedItems = .init(value: database.fetch(with: RSSFeedItem.all))
+    }
     
     // MARK: - Public methods
     
@@ -44,15 +51,17 @@ final class RSSManager: RSSManagerType {
     }
     
     func addRSSFeedItem(item: RSSFeedItem) {
-        var newItems = rssFeedItems.value
-        newItems.append(item)
-        rssFeedItems.accept(newItems)
+        database.createOrUpdate(model: item, with: RSSFeedItemObject.init)
+        rssFeedItems.accept(self.fetchItemsFromDb())
     }
     
     func removeRSSFeedItem(at index: Int) {
-        let itemToRemove = item(at: index)
-        let newItems = rssFeedItems.value.filter({$0.name != itemToRemove.name})
-        rssFeedItems.accept(newItems)
+        database.delete(type: RSSFeedItemObject.self, with: rssFeedItems.value[index].ID)
+        rssFeedItems.accept(self.fetchItemsFromDb())
+    }
+    
+    func removeAllRSSFeedItems() {
+        database.deleteAll()
     }
     
     func fetchRSSStories(for url: URL) -> Observable<[RSSFeedStory]> {
@@ -84,6 +93,10 @@ final class RSSManager: RSSManagerType {
     }
     
     // MARK: - Private methods
+    
+    private func fetchItemsFromDb() -> [RSSFeedItem] {
+        return database.fetch(with: RSSFeedItem.all)
+    }
     
     private func parseItemsFeed(feed: RSSFeed) -> [RSSFeedStory] {
         return feed.items?.map { item -> RSSFeedStory in
