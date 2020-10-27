@@ -5,7 +5,8 @@
 //  Created by Kristijan Delivuk on 27/10/2020.
 //
 
-import Foundation
+import RxSwift
+import RxCocoa
 
 extension Reactive where Base: UITableView {
     func isEmpty(message: String) -> Binder<Bool> {

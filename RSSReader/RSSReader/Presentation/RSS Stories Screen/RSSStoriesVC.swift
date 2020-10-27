@@ -12,7 +12,6 @@ import RxSwift
 import FeedKit
 import SwiftSoup
 import Kingfisher
-import RxCocoa
 
 final class RSSStoriesVC: UIViewController {
     
@@ -90,6 +89,6 @@ final class RSSStoriesVC: UIViewController {
             .distinctUntilChanged()
             .bind(to: isEmpty)
             .disposed(by: disposeBag)
-    }
+
     }
 }
