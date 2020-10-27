@@ -97,7 +97,7 @@ final class RSSFeedsVC: UIViewController {
         ]
 
         UIAlertController
-            .present(in: self, title: "Add new RSS feed provider", message: "Add new RSS feed provider", style: .alert, actions: actions)
+            .presentWithTextFields(in: self, title: "Add new RSS feed provider", message: "Add new RSS feed provider", style: .alert, actions: actions)
             .subscribe(onNext: { [unowned self] items in
                 self.viewModel.addRSSFeedItem(item: RSSFeedItem(ID: UUID().uuidString, name: items.first!, url: items.last!))
             })
@@ -112,7 +112,7 @@ final class RSSFeedsVC: UIViewController {
         ]
 
         UIAlertController
-            .present(in: self, title: "Delete all items", message: "Are you sure you want to delete all RSS feed items?", style: .alert, actions: actions)
+            .presentForError(in: self, title: "Delete all items", message: "Are you sure you want to delete all RSS feed items?", style: .alert, actions: actions)
             .subscribe(onNext: { [unowned self] items in
                 self.viewModel.removeAllRSSFeedItems()
             })

@@ -62,6 +62,7 @@ final class RSSManager: RSSManagerType {
     
     func removeAllRSSFeedItems() {
         database.deleteAll()
+        rssFeedItems.accept(self.fetchItemsFromDb())
     }
     
     func fetchRSSStories(for url: URL) -> Observable<[RSSFeedStory]> {

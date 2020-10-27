@@ -57,8 +57,12 @@ class RSSFeedsVM: RSSFeedsVMType {
     }
     
     func onItemSelected(at indexPath: IndexPath) {
-        let item = rssManager.item(at: indexPath.row)
-        itemSelectedSubject.onNext(item)
+        if isValid(at: indexPath) {
+            let item = rssManager.item(at: indexPath.row)
+            itemSelectedSubject.onNext(item)
+        } else {
+            itemSelectedSubject.onError(GeneralError(type: .wrongUrlFormat, description: "Feed has wrong url format."))
+        }
     }
     
     func removeAllRSSFeedItems() {

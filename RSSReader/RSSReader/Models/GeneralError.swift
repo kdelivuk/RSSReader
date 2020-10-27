@@ -10,6 +10,7 @@ import Foundation
 enum ErrorType {
     case api
     case parsing
+    case wrongUrlFormat
 }
 
 struct GeneralError: Error {

@@ -30,9 +30,11 @@ final class AppCoordinator: Coordinator {
         
         rssFeedsVM
             .itemSelectedSubject
-            .subscribe { (item) in
+            .subscribe { [unowned self] item in
                 self.pushRSSFeedDetailsScreen(rssFeedItem: item, in: rssFeedsNC)
-        }.disposed(by: disposeBag)
+            } onError: { [unowned self] error in
+                self.pushAlert(with: (error as? GeneralError)?.description ?? "", in: rssFeedsNC)
+            }.disposed(by: disposeBag)
 
         window.rootViewController = rssFeedsNC
     }
@@ -43,15 +45,28 @@ final class AppCoordinator: Coordinator {
         
         rssStoriesVM
             .itemSelectedSubject
-            .subscribe { (item) in
+            .subscribe { [unowned self] item in
                 self.pushWebViewScreen(rssFeedItem: item, in: navigationController)
         }.disposed(by: disposeBag)
-         
+        
         navigationController.pushViewController(rssStoriesVC, animated: true)
     }
     
     func pushWebViewScreen(rssFeedItem: RSSFeedStory, in navigationController: UINavigationController) {
         let wkWebVC = WKWebVC(stringURL: rssFeedItem.url!)
         navigationController.pushViewController(wkWebVC, animated: true)
+    }
+    
+    func pushAlert(with error: String, in navigationController: UINavigationController) {
+        let actions: [AlertAction] = [
+            .action(title: "OK")
+        ]
+
+        UIAlertController
+            .presentForError(in: navigationController, title: "Error", message: error, style: .alert, actions: actions)
+            .subscribe(onNext: { _ in
+                
+            })
+            .disposed(by: disposeBag)
     }
 }

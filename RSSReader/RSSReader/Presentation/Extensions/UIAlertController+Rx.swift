@@ -18,7 +18,25 @@ struct AlertAction {
 }
 
 extension UIAlertController {
-    static func present(in viewController: UIViewController, title: String?, message: String?, style: UIAlertController.Style, actions: [AlertAction]) -> Observable<[String]> {
+    static func presentForError(in viewController: UIViewController, title: String?, message: String?, style: UIAlertController.Style, actions: [AlertAction]) -> Observable<[String]> {
+        return Observable.create { observer in
+            let alertController = UIAlertController(title: title, message: message, preferredStyle: style)
+            actions.enumerated().forEach { index, action in
+                let action = UIAlertAction(title: action.title, style: action.style) { _ in
+                    if action.style != .destructive {
+                        observer.onNext([])
+                    }
+                    observer.onCompleted()
+                }
+                alertController.addAction(action)
+            }
+
+            viewController.present(alertController, animated: true, completion: nil)
+            return Disposables.create { alertController.dismiss(animated: true, completion: nil) }
+        }
+    }
+    
+    static func presentWithTextFields(in viewController: UIViewController, title: String?, message: String?, style: UIAlertController.Style, actions: [AlertAction]) -> Observable<[String]> {
         return Observable.create { observer in
             let alertController = UIAlertController(title: title, message: message, preferredStyle: style)
 
