@@ -7,11 +7,7 @@
 
 import UIKit
 import SnapKit
-import RxRelay
 import RxSwift
-import FeedKit
-import SwiftSoup
-import Kingfisher
 
 final class RSSStoriesVC: UIViewController {
     

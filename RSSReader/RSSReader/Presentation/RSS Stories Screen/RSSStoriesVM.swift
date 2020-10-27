@@ -5,10 +5,8 @@
 //  Created by Kristijan Delivuk on 22/10/2020.
 //
 
-import FeedKit
 import RxSwift
 import RxCocoa
-import SwiftSoup
 
 protocol RSSStoriesVMType {
     var viewModelsDriver: Driver<[RSSFeedStory]> { get }
